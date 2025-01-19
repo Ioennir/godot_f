@@ -389,6 +389,19 @@ TEST_CASE("[String] Find") {
 	MULTICHECK_STRING_INT_EQ(s, rfind, "", 15, -1);
 }
 
+TEST_CASE("[String] Find character") {
+	String s = "racecar";
+	CHECK_EQ(s.find_char('r'), 0);
+	CHECK_EQ(s.find_char('r', 1), 6);
+	CHECK_EQ(s.find_char('e'), 3);
+	CHECK_EQ(s.find_char('e', 4), -1);
+
+	CHECK_EQ(s.rfind_char('r'), 6);
+	CHECK_EQ(s.rfind_char('r', 5), 0);
+	CHECK_EQ(s.rfind_char('e'), 3);
+	CHECK_EQ(s.rfind_char('e', 2), -1);
+}
+
 TEST_CASE("[String] Find case insensitive") {
 	String s = "Pretty Whale Whale";
 	MULTICHECK_STRING_EQ(s, findn, "WHA", 7);
@@ -1254,6 +1267,12 @@ TEST_CASE("[String] is_subsequence_of") {
 	CHECK(String("Sub").is_subsequence_ofn(a));
 }
 
+TEST_CASE("[String] is_lowercase") {
+	CHECK(String("abcd1234 !@#$%^&*()_-=+,.<>/\\|[]{};':\"`~").is_lowercase());
+	CHECK(String("").is_lowercase());
+	CHECK(!String("abc_ABC").is_lowercase());
+}
+
 TEST_CASE("[String] match") {
 	CHECK(String("img1.png").match("*.png"));
 	CHECK(!String("img1.jpeg").match("*.png"));
@@ -1668,6 +1687,10 @@ TEST_CASE("[String] Path functions") {
 	for (int i = 0; i < 3; i++) {
 		CHECK(String(file_name[i]).is_valid_filename() == valid[i]);
 	}
+
+	CHECK(String("res://texture.png") == String("res://folder/../folder/../texture.png").simplify_path());
+	CHECK(String("res://texture.png") == String("res://folder/sub/../../texture.png").simplify_path());
+	CHECK(String("res://../../texture.png") == String("res://../../texture.png").simplify_path());
 }
 
 TEST_CASE("[String] hash") {
